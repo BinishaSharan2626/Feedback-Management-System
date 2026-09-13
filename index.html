@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EventFeed | Seamless Event Feedback</title>
+    <style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --primary: #00C9FF;
+  --primary-hover: #0099CC;
+  --gradient-btn: linear-gradient(135deg, #00C9FF 0%, #92FE9D 100%);
+  --header-bg: rgba(255, 255, 255, 0.85);
+  --footer-bg: rgba(255, 255, 255, 0.85);
+  --text-main: #1E293B;
+  --text-muted: #64748B;
+  --card-bg: rgba(255, 255, 255, 0.9);
+  --border-color: rgba(255, 255, 255, 1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-image: url('green-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  color: var(--text-main);
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+header {
+  background-color: var(--header-bg);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-bottom: 1px solid var(--border-color);
+  padding: 1rem 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+}
+
+.logo {
+  font-size: 1.75rem;
+  font-weight: 800;
+  background: -webkit-linear-gradient(45deg, #00C9FF, #92FE9D);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+nav a {
+  text-decoration: none;
+  color: var(--text-muted);
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+nav a:hover, nav a.active {
+  color: #00C9FF;
+  text-shadow: 0 0 10px rgba(0, 201, 255, 0.3);
+}
+
+nav a.btn {
+  color: white !important;
+}
+nav a.btn:hover {
+  transform: scale(1.05);
+}
+
+main {
+  flex: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+  width: 100%;
+}
+
+/* HERO SECTION */
+.page-section {
+  display: none;
+  padding: 4rem 2rem;
+  animation: fadeIn 0.4s ease-out;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  flex: 1;
+}
+
+.page-section.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+h1 {
+  font-size: 3.5rem;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+p {
+  color: var(--text-muted);
+  font-size: 1.125rem;
+  max-width: 65ch;
+  margin-bottom: 2rem;
+  font-weight: 500;
+}
+
+.btn {
+  display: inline-block;
+  background: var(--gradient-btn);
+  color: #1E293B; /* Dark text for bright cyan/green gradient */
+  padding: 0.85rem 2rem;
+  border-radius: 2rem;
+  text-decoration: none;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  box-shadow: 0 4px 15px rgba(0, 201, 255, 0.4);
+}
+
+.btn:hover {
+  box-shadow: 0 8px 25px rgba(0, 201, 255, 0.6);
+  transform: translateY(-3px);
+}
+
+.btn-outline {
+  background: transparent !important;
+  border: 2px solid var(--primary) !important;
+  color: var(--primary) !important;
+  box-shadow: none !important;
+}
+.btn-outline:hover {
+  background: var(--primary) !important;
+  color: #1E293B !important;
+  box-shadow: 0 4px 15px rgba(0, 201, 255, 0.4) !important;
+}
+
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2.5rem;
+}
+
+.event-card, .feedback-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-color);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.event-card:hover, .feedback-card:hover {
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  transform: translateY(-10px) scale(1.02);
+  border-color: rgba(255, 255, 255, 0.8);
+}
+
+.event-card h3 {
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-main);
+}
+
+.event-date {
+  background: var(--gradient-btn);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  display: inline-block;
+}
+
+.event-card p {
+  font-size: 1rem;
+  margin-bottom: 2rem;
+  flex-grow: 1;
+}
+
+.form-container {
+  max-width: 650px;
+  margin: 0 auto;
+  background: var(--card-bg);
+  backdrop-filter: blur(15px);
+  padding: 3rem;
+  border-radius: 1.5rem;
+  border: 1px solid rgba(255,255,255,0.6);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+  margin-bottom: 1.8rem;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.6rem;
+  color: var(--text-main);
+}
+
+input[type="text"],
+input[type="password"],
+input[type="date"],
+select,
+textarea {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  border: 2px solid rgba(0,0,0,0.1);
+  border-radius: 1rem;
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--text-main);
+  background-color: rgba(255, 255, 255, 0.8);
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+select option {
+  background-color: #FFFFFF;
+  color: #1E293B;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #00C9FF;
+  background-color: #FFFFFF;
+  box-shadow: 0 0 0 4px rgba(0, 201, 255, 0.2);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 140px;
+}
+
+.emoji-rating-container {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 1rem;
+  background: rgba(255,255,255,0.5);
+  border-radius: 1rem;
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+.emoji-btn {
+  font-size: 2.5rem;
+  cursor: pointer;
+  filter: grayscale(100%) opacity(50%);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  user-select: none;
+}
+
+.emoji-btn:hover {
+  filter: grayscale(0%) opacity(100%);
+  transform: scale(1.3) translateY(-5px);
+}
+
+.emoji-btn.active {
+  filter: grayscale(0%) opacity(100%);
+  transform: scale(1.3) translateY(-5px);
+  animation: bounceEmoji 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes bounceEmoji {
+  0% { transform: scale(1) translateY(0); }
+  50% { transform: scale(1.5) translateY(-10px); }
+  100% { transform: scale(1.3) translateY(-5px); }
+}
+
+footer {
+  text-align: center;
+  padding: 2.5rem;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border-color);
+  background: var(--footer-bg);
+  backdrop-filter: blur(10px);
+  margin-top: auto;
+  font-weight: 500;
+}
+
+/* Custom Modal Popup Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modal-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-box {
+  background: #FFFFFF;
+  padding: 3rem;
+  border-radius: 2rem;
+  text-align: center;
+  max-width: 450px;
+  width: 90%;
+  transform: scale(0.9) translateY(20px);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255,255,255,0.8);
+}
+
+.modal-overlay.show .modal-box {
+  transform: scale(1) translateY(0);
+}
+
+.modal-icon {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #34D399 0%, #10B981 100%);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem auto;
+  box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+}
+
+.modal-icon svg {
+  width: 40px;
+  height: 40px;
+}
+
+.modal-box h3 {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+  color: #0F172A;
+  font-weight: 800;
+}
+
+.modal-box p {
+  margin-bottom: 2rem;
+  color: #64748B;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1.5rem;
+  }
+  nav ul {
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  h1 {
+    font-size: 2.5rem;
+  }
+}
+    </style>
+</head>
+<body>
+    <header>
+        <a href="#" onclick="showSection('home')" class="logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            EventFeed
+        </a>
+        <nav>
+            <ul>
+                <li><a href="#" onclick="showSection('home')" id="nav-home" class="active">Home</a></li>
+                <li><a href="#" onclick="showSection('events')" id="nav-events">Events</a></li>
+                <li><a href="#" onclick="showSection('feedback')" id="nav-feedback">Feedback</a></li>
+                <li><a href="#" onclick="handleLoginClick()" id="nav-login" class="btn" style="padding: 0.5rem 1rem; color: white;">Login / Sign Up</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <!-- HOME SECTION -->
+        <section id="home" class="page-section active">
+            <div style="text-align: center; padding: 4rem 0;">
+                <h1>Capture the Pulse of Your Events</h1>
+                <p style="margin: 0 auto 2rem auto;">
+                    Welcome to EventFeed, the simplest way to collect, manage, and act on feedback from your attendees. Empower your events with actionable insights and create better experiences.
+                </p>
+                <div style="display: flex; gap: 1rem; justify-content: center;">
+                    <a href="#" onclick="showSection('events')" class="btn btn-outline">Browse Events</a>
+                    <a href="#" onclick="showSection('feedback')" class="btn">Give Feedback</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- EVENTS SECTION -->
+        <section id="events" class="page-section">
+            <h2>Recent & Upcoming Events</h2>
+            <p>Select an event to provide your valuable feedback and help us improve future experiences.</p>
+            <div class="events-grid" id="eventsGrid">
+                <!-- Static Events -->
+                <article class="event-card">
+                    <span class="event-date">Oct 12, 2026</span>
+                    <h3>Tech Innovators Summit</h3>
+                    <p>A full-day conference exploring the latest in artificial intelligence and web technologies.</p>
+                    <button onclick="goToFeedback('tech-summit')" class="btn">Leave Feedback</button>
+                </article>
+                <article class="event-card">
+                    <span class="event-date">Nov 05, 2026</span>
+                    <h3>Design Systems Workshop</h3>
+                    <p>Hands-on workshop focusing on building scalable design systems for enterprise applications.</p>
+                    <button onclick="goToFeedback('design-workshop')" class="btn">Leave Feedback</button>
+                </article>
+                <article class="event-card">
+                    <span class="event-date">Dec 15, 2026</span>
+                    <h3>Year-End Developer Meetup</h3>
+                    <p>Casual networking event and lightning talks from local developers wrapping up the year.</p>
+                    <button onclick="goToFeedback('dev-meetup')" class="btn">Leave Feedback</button>
+                </article>
+            </div>
+        </section>
+
+        <!-- AUTH SECTION -->
+        <section id="login" class="page-section">
+            <div class="form-container" style="max-width: 450px;">
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <div style="display: flex; justify-content: center; gap: 1rem; margin-bottom: 1rem;">
+                        <button id="tabLogin" onclick="switchAuthTab('login')" class="btn" style="padding: 0.5rem 1.5rem;">Login</button>
+                        <button id="tabSignup" onclick="switchAuthTab('signup')" class="btn btn-outline" style="padding: 0.5rem 1.5rem;">Sign Up</button>
+                    </div>
+                    <h2 id="authTitle">Welcome Back</h2>
+                    <p style="margin: 0 auto; font-size: 1rem;" id="authDesc">Login to view events and provide feedback.</p>
+                </div>
+                
+                <!-- LOGIN FORM -->
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label>Select Role</label>
+                        <select id="loginRole" required>
+                            <option value="manager">Event Manager</option>
+                            <option value="admin">System Admin</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="loginUsername" placeholder="e.g. Rahul" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="loginPassword" placeholder="Enter password" required>
+                    </div>
+                    <p id="loginError" style="color: #FF3366; font-size: 0.9rem; display: none; margin-bottom: 1rem; font-weight: 600;">Incorrect credentials.</p>
+                    <button type="submit" class="btn" style="width: 100%;">Login</button>
+                </form>
+
+                <!-- SIGNUP FORM -->
+                <form id="signupForm" style="display: none;">
+                    <div class="form-group">
+                        <label>Select Role</label>
+                        <select id="signupRole" required>
+                            <option value="manager">Event Manager</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Choose a Username</label>
+                        <input type="text" id="signupUsername" placeholder="e.g. Rahul123" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Choose a Password</label>
+                        <input type="password" id="signupPassword" placeholder="Create a password" required>
+                    </div>
+                    <p id="signupError" style="color: #FF3366; font-size: 0.9rem; display: none; margin-bottom: 1rem; font-weight: 600;">Username already exists.</p>
+                    <button type="submit" class="btn" style="width: 100%;">Create Account</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- DASHBOARD PORTAL SECTION -->
+        <section id="dashboard-portal" class="page-section">
+            <div style="text-align: center; margin-bottom: 3rem; position: relative;">
+                <h2 id="portal-title">Dashboard</h2>
+                <p style="margin: 0 auto;">Manage your events and review attendee feedback.</p>
+                <button onclick="handleLogout()" class="btn btn-outline" style="position: absolute; top: 0; right: 0;">Logout</button>
+            </div>
+            <div class="events-grid">
+                <!-- For Manager & Admin -->
+                <article class="event-card" style="text-align: center; align-items: center; justify-content: center;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">📅</div>
+                    <h3>Create Event</h3>
+                    <p>Add a new upcoming event to start collecting feedback.</p>
+                    <button onclick="showSection('add-event')" class="btn">Add New Event</button>
+                </article>
+                <article class="event-card" style="text-align: center; align-items: center; justify-content: center;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">💬</div>
+                    <h3>View Feedbacks</h3>
+                    <p>Review all feedback submitted by your attendees.</p>
+                    <button onclick="showSection('feedback-list')" class="btn">View All Feedback</button>
+                </article>
+                <!-- Only for Admin -->
+                <article id="admin-settings-card" class="event-card" style="display: none; text-align: center; align-items: center; justify-content: center;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">⚙️</div>
+                    <h3>Admin Reports</h3>
+                    <p>View Event Adders, their Events, and all Feedbacks in one place.</p>
+                    <button onclick="showSection('admin-reports')" class="btn">View Reports</button>
+                </article>
+            </div>
+        </section>
+
+        <!-- ADMIN REPORTS SECTION -->
+        <section id="admin-reports" class="page-section">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <h2>System Overview Reports</h2>
+                <p>Complete data overview for Administrators.</p>
+                <button onclick="showSection('dashboard-portal')" class="btn btn-outline" style="margin-top: 1rem;">Back to Dashboard</button>
+            </div>
+            <div id="adminReportsContainer" style="display: flex; flex-direction: column; gap: 2rem;">
+                <p>Loading reports...</p>
+            </div>
+        </section>
+
+        <!-- ADD EVENT SECTION -->
+        <section id="add-event" class="page-section">
+            <div class="form-container">
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <h2>Create a New Event</h2>
+                    <p style="margin: 0 auto; font-size: 1rem;">Add your event details to start collecting feedback instantly.</p>
+                </div>
+                <form id="addEventForm">
+                    <div class="form-group">
+                        <label>Event Title</label>
+                        <input type="text" id="eventTitle" placeholder="e.g. Summer Code Jam" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Event Date</label>
+                        <input type="date" id="eventDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Short Description</label>
+                        <textarea id="eventDesc" placeholder="Describe your event..." required style="min-height: 80px;"></textarea>
+                    </div>
+                    <button type="submit" class="btn" style="width: 100%;">Create Event</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- FEEDBACK SECTION -->
+        <section id="feedback" class="page-section">
+            <div style="text-align: right; margin-bottom: 1rem;">
+                <button onclick="toggleKioskMode()" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.9rem;" id="kioskBtn">🖥️ Enter Kiosk Mode</button>
+            </div>
+            <div class="form-container" id="feedbackFormContainer">
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <h2>Share Your Experience</h2>
+                    <p style="margin: 0 auto; font-size: 1rem;">Your feedback is crucial for making our future events better.</p>
+                </div>
+                <form id="feedbackForm">
+                    <div class="form-group">
+                        <label>Select Event</label>
+                        <select id="eventName" name="eventName" required>
+                            <option value="" disabled selected>Choose an event...</option>
+                            <option value="tech-summit">Tech Innovators Summit (Oct 12, 2026)</option>
+                            <option value="design-workshop">Design Systems Workshop (Nov 05, 2026)</option>
+                            <option value="dev-meetup">Year-End Developer Meetup (Dec 15, 2026)</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Your Name (Optional)</label>
+                        <input type="text" name="attendeeName" placeholder="Jane Doe">
+                    </div>
+                    <div class="form-group">
+                        <label>How satisfied are you with the event?</label>
+                        <div class="emoji-rating-container">
+                            <span class="emoji-btn" data-value="1" title="Terrible">😡</span>
+                            <span class="emoji-btn" data-value="2" title="Poor">😞</span>
+                            <span class="emoji-btn" data-value="3" title="Average">😐</span>
+                            <span class="emoji-btn" data-value="4" title="Good">😊</span>
+                            <span class="emoji-btn" data-value="5" title="Excellent">😍</span>
+                        </div>
+                        <input type="hidden" name="rating" id="ratingInput" required>
+                        <p id="ratingLabel" style="text-align: center; color: var(--text-muted); font-weight: 500; font-size: 0.9rem; margin-top: 0.5rem; height: 1.2rem;"></p>
+                    </div>
+                    <div class="form-group">
+                        <label>What did you like or what could be improved?</label>
+                        <textarea name="comments" placeholder="Please share your thoughts in detail..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn" style="width: 100%;">Submit Feedback</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- FEEDBACK LIST SECTION -->
+        <section id="feedback-list" class="page-section">
+            <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                <h2>Recent Feedback Submissions</h2>
+                <button onclick="showSection('dashboard-portal')" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Back to Dashboard</button>
+            </div>
+            
+            <div id="analyticsDashboard" style="margin-top: 2rem; display: none; background: rgba(255,255,255,0.7); backdrop-filter: blur(10px); padding: 1.5rem; border-radius: 1rem; border: 1px solid rgba(255,255,255,1);">
+                <h3 style="margin-bottom: 1rem; font-size: 1.2rem;">Sentiment Overview</h3>
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                    <div style="flex: 1; text-align: center; background: #10B981; color: white; padding: 1rem; border-radius: 0.75rem;">
+                        <h4 style="font-size: 2rem;" id="statPositive">0</h4>
+                        <p style="font-size: 0.8rem; margin: 0; color: rgba(255,255,255,0.8);">Positive</p>
+                    </div>
+                    <div style="flex: 1; text-align: center; background: #64748B; color: white; padding: 1rem; border-radius: 0.75rem;">
+                        <h4 style="font-size: 2rem;" id="statNeutral">0</h4>
+                        <p style="font-size: 0.8rem; margin: 0; color: rgba(255,255,255,0.8);">Neutral</p>
+                    </div>
+                    <div style="flex: 1; text-align: center; background: #EF4444; color: white; padding: 1rem; border-radius: 0.75rem;">
+                        <h4 style="font-size: 2rem;" id="statNegative">0</h4>
+                        <p style="font-size: 0.8rem; margin: 0; color: rgba(255,255,255,0.8);">Needs Attention</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="feedbackContainer" style="display: flex; flex-direction: column; gap: 1rem; margin-top: 2rem;">
+                <p>Loading feedback...</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 EventFeed. All rights reserved.</p>
+    </footer>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-icon">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+            </div>
+            <h3>Thank You!</h3>
+            <p>Your feedback has been submitted successfully.</p>
+            <button onclick="closeModalAndGoHome()" class="btn" style="width: 100%;">Back to Home</button>
+        </div>
+    </div>
+
+    <!-- Generic Alert Modal -->
+    <div id="customAlertModal" class="modal-overlay">
+        <div class="modal-box" style="padding: 2rem;">
+            <div class="modal-icon" style="background: linear-gradient(135deg, #00C9FF 0%, #92FE9D 100%); width: 60px; height: 60px; margin-bottom: 1rem;">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 30px; height: 30px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <h3 id="customAlertTitle" style="font-size: 1.25rem; margin-bottom: 0.5rem;">Notification</h3>
+            <p id="customAlertMessage" style="font-size: 1rem; margin-bottom: 1.5rem;"></p>
+            <button onclick="closeCustomAlert()" class="btn" style="width: 100%;">OK</button>
+        </div>
+    </div>
+
+    <script>
+const EVENTS_API_URL = '/api/events';
+const FEEDBACK_API_URL = '/api/feedback';
+let userRole = localStorage.getItem('userRole'); // 'manager', 'admin', or null
+let managerUsername = localStorage.getItem('managerUsername');
+
+window.showAlert = function(message) {
+    document.getElementById('customAlertMessage').textContent = message;
+    document.getElementById('customAlertModal').classList.add('show');
+};
+
+window.closeCustomAlert = function() {
+    document.getElementById('customAlertModal').classList.remove('show');
+};
+
+window.handleLoginClick = function() {
+    if(userRole === 'admin' || userRole === 'manager') {
+        showSection('dashboard-portal');
+    } else {
+        document.getElementById('loginError').style.display = 'none';
+        document.getElementById('loginPassword').value = '';
+        showSection('login');
+    }
+};
+
+window.handleLogout = function() {
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('managerUsername');
+    userRole = null;
+    managerUsername = null;
+    setupDashboard();
+    showAlert('Logged out successfully.');
+    showSection('home');
+};
+
+function setupDashboard() {
+    const loginBtn = document.getElementById('nav-login');
+    const adminSettings = document.getElementById('admin-settings-card');
+    const portalTitle = document.getElementById('portal-title');
+    
+    if (userRole === 'admin') {
+        if(loginBtn) loginBtn.textContent = 'Admin Portal';
+        if(adminSettings) adminSettings.style.display = 'flex';
+        if(portalTitle) portalTitle.textContent = 'System Admin Dashboard';
+    } else if (userRole === 'manager') {
+        if(loginBtn) loginBtn.textContent = 'Manager Portal';
+        if(adminSettings) adminSettings.style.display = 'none';
+        if(portalTitle) portalTitle.textContent = 'Event Manager Dashboard';
+    } else {
+        if(loginBtn) loginBtn.textContent = 'Login / Sign Up';
+    }
+    
+    // Re-render events to apply role-based filters
+    renderCustomEvents();
+}
+// Run on load
+setupDashboard();
+
+async function getEvents() {
+    try {
+        const response = await fetch(EVENTS_API_URL);
+        const result = await response.json();
+        return result.data || [];
+    } catch (e) {
+        console.error('Error fetching events', e);
+        return [];
+    }
+}
+
+async function addEvent(event) {
+    try {
+        await fetch(EVENTS_API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(event)
+        });
+        await renderCustomEvents();
+        await populateEventOptions();
+    } catch (e) {
+        console.error('Error adding event', e);
+    }
+}
+
+// Render custom events on the events tab
+async function renderCustomEvents() {
+    const grid = document.getElementById('eventsGrid');
+    if (!grid) return;
+    
+    // Clear custom events if we are re-rendering
+    document.querySelectorAll('.custom-event').forEach(e => e.remove());
+
+    let events = await getEvents();
+    
+    // If the user is a manager, only show their own events
+    if (userRole === 'manager') {
+        events = events.filter(e => e.createdBy === managerUsername);
+    }
+    
+    events.forEach(event => {
+        const article = document.createElement('article');
+        article.className = 'event-card custom-event';
+        
+        // Only show 'Leave Feedback' to normal attendees (no role)
+        const feedbackBtnHtml = (!userRole) 
+            ? `<button onclick="goToFeedback('${event.id}')" class="btn">Leave Feedback</button>` 
+            : '';
+            
+        article.innerHTML = `
+            <span class="event-date">${event.date}</span>
+            <h3>${event.title}</h3>
+            <p>${event.desc}</p>
+            ${feedbackBtnHtml}
+        `;
+        grid.appendChild(article);
+    });
+}
+
+async function populateEventOptions() {
+    const select = document.getElementById('eventName');
+    if (!select) return;
+    
+    const events = await getEvents();
+    events.forEach(event => {
+        if (!Array.from(select.options).some(opt => opt.value === event.id)) {
+            const option = document.createElement('option');
+            option.value = event.id;
+            option.textContent = `${event.title} (${event.date})`;
+            const otherOption = Array.from(select.options).find(opt => opt.value === 'other');
+            if (otherOption) select.insertBefore(option, otherOption);
+            else select.appendChild(option);
+        }
+    });
+}
+
+// SPA Navigation
+window.showSection = function(sectionId) {
+    // PROTECT ROUTES
+    const protectedRoutes = ['dashboard-portal', 'feedback-list', 'admin-reports', 'add-event'];
+    if (!userRole && protectedRoutes.includes(sectionId)) {
+        showAlert("Please login or signup to access this page.");
+        sectionId = 'login';
+    }
+
+    document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
+    const targetSection = document.getElementById(sectionId);
+    if(targetSection) targetSection.classList.add('active');
+    
+    // Update nav colors
+    document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+    const navLink = document.getElementById('nav-' + sectionId);
+    if(navLink) navLink.classList.add('active');
+
+    // If opening feedback list, fetch data
+    if(sectionId === 'feedback-list') {
+        fetchFeedback();
+    }
+    
+    if(sectionId === 'admin-reports') {
+        generateAdminReports();
+    }
+}
+
+window.goToFeedback = function(eventId) {
+    showSection('feedback');
+    const select = document.getElementById('eventName');
+    if(select) select.value = eventId;
+}
+
+async function generateAdminReports() {
+    const container = document.getElementById('adminReportsContainer');
+    const customEvents = await getEvents();
+    
+    let html = '';
+    
+    // Aggregate data
+    const adders = [...new Set(customEvents.map(e => e.createdBy || 'admin'))];
+    
+    html += '<div class="feedback-card" style="text-align: left;"><h3>Event Adders</h3><ul>';
+    adders.forEach(adder => {
+        const count = customEvents.filter(e => (e.createdBy || 'admin') === adder).length;
+        html += `<li><strong>${adder}</strong>: ${count} event(s)</li>`;
+    });
+    html += '</ul></div>';
+    
+    html += '<div class="feedback-card" style="text-align: left;"><h3>Event Details</h3><ul>';
+    customEvents.forEach(e => {
+        html += `<li><strong>${e.title}</strong> (by ${e.createdBy || 'admin'}) - ${e.date}</li>`;
+    });
+    html += '</ul></div>';
+    
+    html += '<div class="feedback-card" style="text-align: left;"><h3>All Feedbacks</h3><p>To view all feedbacks, click "Back to Dashboard" and select "View All Feedback".</p></div>';
+    
+    container.innerHTML = html;
+}
+
+// Fetch feedback from Backend
+async function fetchFeedback() {
+    const container = document.getElementById('feedbackContainer');
+    if(!container) return;
+    
+    container.innerHTML = '<p>Loading feedback...</p>';
+    try {
+        const endpoint = userRole === 'manager' ? `/api/feedback/manager/${managerUsername}` : '/api/feedback';
+        const response = await fetch(endpoint);
+        const result = await response.json();
+        
+        if (result.data && result.data.length > 0) {
+            let feedbacksToDisplay = result.data;
+            
+            if (feedbacksToDisplay.length === 0) {
+                container.innerHTML = '<p>No feedback submitted yet for your events.</p>';
+                document.getElementById('analyticsDashboard').style.display = 'none';
+                return;
+            }
+            
+            // Analytics logic
+            let pCount = 0; let nCount = 0; let aCount = 0;
+            
+            container.innerHTML = '';
+            feedbacksToDisplay.forEach(fb => {
+                const card = document.createElement('div');
+                card.className = 'feedback-card';
+                
+                let sentimentBadge = '';
+                const rating = parseInt(fb.rating) || 3;
+                if (rating >= 4) {
+                    sentimentBadge = rating === 5 ? '<span style="background: #10B981; color: white; padding: 0.2rem 0.6rem; border-radius: 1rem; font-size: 0.8rem; font-weight: bold;">Excellent</span>' : '<span style="background: #3B82F6; color: white; padding: 0.2rem 0.6rem; border-radius: 1rem; font-size: 0.8rem; font-weight: bold;">Positive</span>';
+                    pCount++;
+                } else if (rating === 3) {
+                    sentimentBadge = '<span style="background: #64748B; color: white; padding: 0.2rem 0.6rem; border-radius: 1rem; font-size: 0.8rem; font-weight: bold;">Neutral</span>';
+                    nCount++;
+                } else {
+                    sentimentBadge = '<span style="background: #EF4444; color: white; padding: 0.2rem 0.6rem; border-radius: 1rem; font-size: 0.8rem; font-weight: bold;">Needs Attention</span>';
+                    aCount++;
+                }
+
+                const stars = '★'.repeat(rating) + '☆'.repeat(5 - rating);
+                card.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                        <strong>Event: ${fb.eventId}</strong>
+                        <div>
+                            ${sentimentBadge}
+                            <span style="color: #F59E0B; font-size: 1.25rem; margin-left: 0.5rem;">${stars}</span>
+                        </div>
+                    </div>
+                    <p style="margin-bottom: 0.5rem; font-style: italic;">"${fb.comments}"</p>
+                    <small style="color: var(--text-muted);">Submitted by: ${fb.attendeeName} on ${new Date(fb.createdAt).toLocaleString()}</small>
+                `;
+                container.appendChild(card);
+            });
+            
+            // Show analytics
+            document.getElementById('analyticsDashboard').style.display = 'block';
+            document.getElementById('statPositive').textContent = pCount;
+            document.getElementById('statNeutral').textContent = nCount;
+            document.getElementById('statNegative').textContent = aCount;
+        } else {
+            container.innerHTML = '<p>No feedback submitted yet.</p>';
+        }
+    } catch (err) {
+        console.error(err);
+        container.innerHTML = '<p>Error loading feedback from the database.</p>';
+    }
+}
+
+window.closeModalAndGoHome = function() {
+    const modal = document.getElementById('successModal');
+    if (modal) modal.classList.remove('show');
+    showSection('home');
+}
+
+window.switchAuthTab = function(tab) {
+    const loginForm = document.getElementById('loginForm');
+    const signupForm = document.getElementById('signupForm');
+    const tabLogin = document.getElementById('tabLogin');
+    const tabSignup = document.getElementById('tabSignup');
+    const authTitle = document.getElementById('authTitle');
+    const authDesc = document.getElementById('authDesc');
+    
+    if (tab === 'login') {
+        loginForm.style.display = 'block';
+        signupForm.style.display = 'none';
+        tabLogin.className = 'btn';
+        tabSignup.className = 'btn btn-outline';
+        authTitle.textContent = 'Welcome Back';
+        authDesc.textContent = 'Login to view events and provide feedback.';
+    } else {
+        loginForm.style.display = 'none';
+        signupForm.style.display = 'block';
+        tabLogin.className = 'btn btn-outline';
+        tabSignup.className = 'btn';
+        authTitle.textContent = 'Create an Account';
+        authDesc.textContent = 'Join us to start sharing your event experiences.';
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    renderCustomEvents();
+    populateEventOptions();
+    
+    // Emoji Rating Logic
+    const emojiBtns = document.querySelectorAll('.emoji-btn');
+    const ratingInput = document.getElementById('ratingInput');
+    const ratingLabel = document.getElementById('ratingLabel');
+    const labels = {
+        '1': 'Terrible - Would not attend again',
+        '2': 'Poor - Below expectations',
+        '3': 'Average - It was okay',
+        '4': 'Good - Met expectations',
+        '5': 'Excellent - Exceeded expectations'
+    };
+
+    emojiBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Remove active from all
+            emojiBtns.forEach(b => b.classList.remove('active'));
+            // Add active to clicked
+            this.classList.add('active');
+            // Update hidden input
+            const val = this.getAttribute('data-value');
+            ratingInput.value = val;
+            // Update label
+            ratingLabel.textContent = labels[val];
+        });
+    });
+    
+    // Auth Logic
+    const AUTH_API = '/api';
+
+    // Login Form Submission
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const role = document.getElementById('loginRole').value;
+            const uname = document.getElementById('loginUsername').value;
+            const pwd = document.getElementById('loginPassword').value;
+            const err = document.getElementById('loginError');
+            err.style.display = 'none';
+            
+            try {
+                const res = await fetch(AUTH_API + '/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: uname, password: pwd, role: role })
+                });
+                
+                if (res.ok) {
+                    localStorage.setItem('userRole', role);
+                    localStorage.setItem('managerUsername', uname);
+                    userRole = role;
+                    managerUsername = uname;
+                    setupDashboard();
+                    
+                    showSection('dashboard-portal');
+                    e.target.reset();
+                } else {
+                    err.style.display = 'block';
+                }
+            } catch (error) {
+                console.error(error);
+                err.textContent = 'Server error.';
+                err.style.display = 'block';
+            }
+        });
+    }
+
+    // Signup Form Submission
+    const signupForm = document.getElementById('signupForm');
+    if (signupForm) {
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const role = document.getElementById('signupRole').value;
+            const uname = document.getElementById('signupUsername').value;
+            const pwd = document.getElementById('signupPassword').value;
+            const err = document.getElementById('signupError');
+            err.style.display = 'none';
+            
+            try {
+                const res = await fetch(AUTH_API + '/signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: uname, password: pwd, role: role })
+                });
+                
+                if (res.ok) {
+                    showAlert('Account created successfully! Please login.');
+                    e.target.reset();
+                    switchAuthTab('login');
+                } else if (res.status === 409) {
+                    err.textContent = 'Username already exists.';
+                    err.style.display = 'block';
+                } else {
+                    err.textContent = 'Signup failed. Try again.';
+                    err.style.display = 'block';
+                }
+            } catch (error) {
+                console.error(error);
+                err.textContent = 'Server error.';
+                err.style.display = 'block';
+            }
+        });
+    }
+
+    // Add Event Form Submission
+    const addEventForm = document.getElementById('addEventForm');
+    if(addEventForm) {
+        addEventForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const title = document.getElementById('eventTitle').value;
+            const dateVal = document.getElementById('eventDate').value;
+            const desc = document.getElementById('eventDesc').value;
+            
+            const dateObj = new Date(dateVal);
+            const formattedDate = dateObj.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
+            
+            const newEvent = {
+                id: title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+                title: title,
+                date: formattedDate,
+                desc: desc,
+                createdBy: userRole === 'manager' ? managerUsername : 'admin'
+            };
+            
+            addEvent(newEvent);
+            showAlert('Event created successfully!');
+            e.target.reset();
+            showSection('events');
+        });
+    }
+
+    // Feedback Form Submission
+    const feedbackForm = document.getElementById('feedbackForm');
+    if(feedbackForm) {
+        feedbackForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await fetch(FEEDBACK_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                if (response.ok) {
+                    e.target.reset();
+                    // Reset emojis
+                    document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('active'));
+                    document.getElementById('ratingLabel').textContent = '';
+                    
+                    const modal = document.getElementById('successModal');
+                    if (modal) modal.classList.add('show');
+                    
+                    if (window.isKioskMode) {
+                        setTimeout(() => {
+                            closeModalAndGoHome();
+                            showSection('feedback'); // keep it on feedback page
+                        }, 3000);
+                    }
+                } else {
+                    showAlert('Failed to submit feedback. Please try again.');
+                }
+            } catch (err) {
+                console.error('Error:', err);
+                showAlert('Error connecting to the server.');
+            }
+        });
+    }
+});
+
+window.isKioskMode = false;
+window.toggleKioskMode = function() {
+    window.isKioskMode = !window.isKioskMode;
+    const header = document.querySelector('header');
+    const footer = document.querySelector('footer');
+    const btn = document.getElementById('kioskBtn');
+    
+    if (window.isKioskMode) {
+        header.style.display = 'none';
+        footer.style.display = 'none';
+        btn.innerHTML = '❌ Exit Kiosk Mode';
+        btn.classList.replace('btn-outline', 'btn');
+        btn.style.background = '#EF4444';
+        btn.style.color = 'white';
+        btn.style.boxShadow = 'none';
+        
+        if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen().catch(e => console.log(e));
+        }
+    } else {
+        header.style.display = 'flex';
+        footer.style.display = 'block';
+        btn.innerHTML = '🖥️ Enter Kiosk Mode';
+        btn.style.background = '';
+        btn.style.color = '';
+        btn.classList.replace('btn', 'btn-outline');
+        
+        if (document.exitFullscreen) {
+            document.exitFullscreen().catch(e => console.log(e));
+        }
+    }
+};
+    </script>
+</body>
+</html>
